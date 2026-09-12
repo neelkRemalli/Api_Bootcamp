@@ -48,7 +48,7 @@ exports.addReview = asyncHandler(async (req, res, next) => {
 
   if (!bootcamp) {
     return next(
-      new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404)
+      new ErrorResponse(`Bootcamp not found with id of ${req.params.bootcampId}`, 404)
     );
   }
 
@@ -57,11 +57,11 @@ exports.addReview = asyncHandler(async (req, res, next) => {
   res.status(201).json({ success: true, data: review });
 });
 
-// @Descrition   update review
+// @Description   update review
 // @route        PUT /api/v1/reviews/:id
 // @access       private
 exports.updateReview = asyncHandler(async (req, res, next) => {
-  const {title, text, rating} = req.body;
+  const { title, text, rating } = req.body;
   let review = await Review.findById(req.params.id);
 
   if (!review) {
@@ -70,21 +70,17 @@ exports.updateReview = asyncHandler(async (req, res, next) => {
     );
   }
   if (review.user.toString() !== req.user.id && req.user.role !== 'admin') {
-    return next(new ErrorResponse(`Not authroized to upate review`, 401));
+    return next(new ErrorResponse(`Not authorized to update review`, 401));
   }
   review.title = title || review.title;
   review.text = text || review.text;
   review.rating = rating || review.rating;
 
-  await review.save()
-  // review = await Review.findByIdAndUpdate(req.params.id, req.body, {
-  //   new: true,
-  //   runValidators: true,
-  // });
+  await review.save();
   res.status(200).json({ success: true, data: review });
 });
 
-// @Descrition   delete review
+// @Description   delete review
 // @route        DELETE /api/v1/reviews/:id
 // @access       private
 exports.deleteReview = asyncHandler(async (req, res, next) => {
@@ -96,7 +92,7 @@ exports.deleteReview = asyncHandler(async (req, res, next) => {
     );
   }
   if (review.user.toString() !== req.user.id && req.user.role !== 'admin') {
-    return next(new ErrorResponse(`Not authroized to upate review`, 401));
+    return next(new ErrorResponse(`Not authorized to delete review`, 401));
   }
   await review.remove();
   res.status(200).json({ success: true, data: {} });

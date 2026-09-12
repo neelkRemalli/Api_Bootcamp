@@ -95,12 +95,17 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true, data: null });
 });
 
-//  Get bootcamp within raduis
+//  Get bootcamp within radius
 exports.getBootcampInRadius = asyncHandler(async (req, res, next) => {
   const { zipcode, distance } = req.params;
 
   // Get lat/ lng from geocoder
   const loc = await geocoder.geocode(zipcode);
+  if (!loc || !loc.length) {
+    return next(
+      new ErrorResponse(`No location found for zipcode ${zipcode}`, 404)
+    );
+  }
   const lat = loc[0].latitude;
   const lng = loc[0].longitude;
 
@@ -117,13 +122,11 @@ exports.getBootcampInRadius = asyncHandler(async (req, res, next) => {
   });
 });
 
-/// PUT api/v1/bootcamps/bootcampIdphoto
+/// PUT api/v1/bootcamps/:id/photo
 /// upload image
 /// Private access
 
 exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
-  
-
   const bootcamp = await Bootcamp.findById(req.params.id);
 
   if (!bootcamp) {
@@ -140,7 +143,7 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
       )
     );
   }
-  
+
   if (!req.files) {
     return next(new ErrorResponse(`Please upload a file`, 400));
   }
@@ -164,10 +167,9 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
   file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
     if (err) {
       console.error(err);
-      return next(new ErrorResponse(`Problem with file upload `, 500));
+      return next(new ErrorResponse(`Problem with file upload`, 500));
     }
     await Bootcamp.findByIdAndUpdate(req.params.id, { photo: file.name });
+    res.status(200).json({ success: true, data: file.name });
   });
-
-  res.status(200).json({ success: true, data: file.name });
 });

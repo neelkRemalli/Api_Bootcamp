@@ -4,6 +4,9 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const fileupload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
+// Load env vars
+dotenv.config({ path: './config/config.env' });
+
 const connectDB = require('./config/db');
 
 // Security
@@ -13,10 +16,6 @@ const xss = require('xss-clean');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
 const cors = require('cors');
-
-// Load env vars
-dotenv.config({ path: './config/config.env' });
-dotenv.config({ path: './config/config.env' });
 
 // Routes files
 const bootcamps = require('./routes/bootcamps');
@@ -44,10 +43,14 @@ if (process.env.NODE_ENV === 'development') {
 // file upload image
 app.use(fileupload());
 
+// Swagger
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
+
 // Sanitize data
 app.use(mongoSanitize());
-// Set security headers
-app.use(helmet());
+// Set security headers (disable CSP so Swagger UI loads scripts and stylesheets properly)
+app.use(helmet({ contentSecurityPolicy: false }));
 // Prevent XSS attacks
 app.use(xss());
 // Rate limiting
@@ -63,10 +66,24 @@ app.use(cors());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Swagger Documentation
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    customSiteTitle: 'DevCamper API Docs',
+  })
+);
+app.get('/api-docs.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
+app.get('/docs', (req, res) => res.redirect('/api-docs'));
 
 app.use('/api/v1/bootcamps', bootcamps);
 app.use('/api/v1/courses', courses);
 app.use('/api/v1/auth', auth);
+app.use('/api/v1/users', users);
 app.use('/api/v1/auth/users', users);
 app.use('/api/v1/reviews', reviews);
 

@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const bcrypt = require('bcryptjs/dist/bcrypt');
+const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'publisher'],
+    enum: ['user', 'publisher', 'admin'],
     default: 'user',
   },
   password: {
@@ -49,8 +49,8 @@ UserSchema.methods.getSignedJwtToken = function () {
 
 // Match enter password to hash password
 UserSchema.pre('save', async function (next) {
-  if(!this.isModified('password')){
-    next();
+  if (!this.isModified('password')) {
+    return next();
   }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);

@@ -48,7 +48,7 @@ exports.addCourse = asyncHandler(async (req, res, next) => {
   const bootcamp = await Bootcamp.findById(req.params.bootcampId);
   if (!bootcamp) {
     return next(
-      new ErrorResponse(`resources not found with id ${req.params.id}`, 404)
+      new ErrorResponse(`Resource not found with id ${req.params.bootcampId}`, 404)
     );
   }
   if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
