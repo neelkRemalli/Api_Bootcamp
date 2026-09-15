@@ -14,9 +14,8 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      // url: 'http://localhost:5000',
-      url: '/',
-      description: 'current Server',
+      url: 'https://apibootcamp.onrender.com',
+      description: 'Render Server',
     },
   ],
   components: {
