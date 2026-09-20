@@ -39,6 +39,9 @@ A production-ready RESTful API for a bootcamp directory platform — built with 
 **DevCamper** is a comprehensive backend API that powers a coding bootcamp directory platform. It enables users to discover bootcamps, browse courses, leave reviews, and manage their accounts — while publishers can list and manage their own bootcamp offerings. The API features JWT-based authentication, role-based access control, geospatial queries, file uploads, and interactive Swagger documentation.
 
 ---
+## API Documentation
+
+[View API Documentation](https://apibootcamp.onrender.com/api-docs)
 
 ## ✨ Features
 
@@ -307,8 +310,6 @@ devcamper-api/
 └── README.md
 ```
 
-## API Documentation
 
-[View API Documentation](https://apibootcamp.onrender.com/api-docs)
 
 Built with ❤️ using Node.js, Express & MongoDB
