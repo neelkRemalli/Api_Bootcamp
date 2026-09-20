@@ -307,6 +307,8 @@ devcamper-api/
 └── README.md
 ```
 
----
+## API Documentation
+
+[View API Documentation](https://apibootcamp.onrender.com/api-docs)
 
 Built with ❤️ using Node.js, Express & MongoDB
